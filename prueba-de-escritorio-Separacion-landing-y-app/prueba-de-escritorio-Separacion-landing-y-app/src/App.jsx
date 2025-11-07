@@ -17,7 +17,16 @@ import CustomerDashboard from '@/pages/customer/CustomerDashboard';
 import ShoppingCart from '@/pages/ShoppingCart';
 
 const PrivateRoute = ({ children, role }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center text-gray-600">
+        Validando sesión...
+      </div>
+    );
+  }
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }

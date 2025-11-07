@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
 
   const landingItems = [
     { name: 'Inicio', path: '/' },
@@ -50,7 +50,9 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-            {user ? (
+            {loading ? (
+              <span className="text-sm text-gray-500">Cargando...</span>
+            ) : user ? (
               <>
                 {/* Icono carrito igual que antes */}
                 {user.type === 'cliente' && (
@@ -117,30 +119,48 @@ const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
-              <div className="pt-4 mt-4 border-t border-gray-200">
-                {user ? (
-                   <div className="flex flex-col space-y-2">
-                     <Link to={`/dashboard/${user.type}`} onClick={() => setIsOpen(false)}>
-                       <Button variant="ghost" className="w-full justify-start"><LayoutDashboard className="w-4 h-4 mr-2" />Dashboard</Button>
-                     </Link>
-                     {user.type === 'cliente' && (
+                <div className="pt-4 mt-4 border-t border-gray-200">
+                  {loading ? (
+                    <span className="px-3 py-2 text-sm text-gray-500">Cargando sesión...</span>
+                  ) : user ? (
+                    <div className="flex flex-col space-y-2">
+                      <Link to={`/dashboard/${user.type}`} onClick={() => setIsOpen(false)}>
+                        <Button variant="ghost" className="w-full justify-start">
+                          <LayoutDashboard className="w-4 h-4 mr-2" />Dashboard
+                        </Button>
+                      </Link>
+                      {user.type === 'cliente' && (
                         <Link to="/carrito" onClick={() => setIsOpen(false)}>
-                            <Button variant="ghost" className="w-full justify-start"><ShoppingCart className="w-4 h-4 mr-2" />Carrito</Button>
+                          <Button variant="ghost" className="w-full justify-start">
+                            <ShoppingCart className="w-4 h-4 mr-2" />Carrito
+                          </Button>
                         </Link>
-                     )}
-                     <Button onClick={() => { logout(); setIsOpen(false); }} className="w-full btn-gradient justify-start"><LogOut className="w-4 h-4 mr-2" />Cerrar Sesión</Button>
-                   </div>
-                ) : (
-                  <div className="flex flex-col space-y-2">
-                    <Link to="/login" onClick={() => setIsOpen(false)}>
-                      <Button variant="ghost" className="w-full justify-start"><User className="w-4 h-4 mr-2" />Iniciar Sesión</Button>
-                    </Link>
-                    <Link to="/register" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full btn-gradient justify-start"><UserPlus className="w-4 h-4 mr-2" />Registrarse</Button>
-                    </Link>
-                  </div>
-                )}
-              </div>
+                      )}
+                      <Button
+                        onClick={() => {
+                          logout();
+                          setIsOpen(false);
+                        }}
+                        className="w-full btn-gradient justify-start"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />Cerrar Sesión
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col space-y-2">
+                      <Link to="/login" onClick={() => setIsOpen(false)}>
+                        <Button variant="ghost" className="w-full justify-start">
+                          <User className="w-4 h-4 mr-2" />Iniciar Sesión
+                        </Button>
+                      </Link>
+                      <Link to="/register" onClick={() => setIsOpen(false)}>
+                        <Button className="w-full btn-gradient justify-start">
+                          <UserPlus className="w-4 h-4 mr-2" />Registrarse
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
             </div>
           </motion.div>
         )}
